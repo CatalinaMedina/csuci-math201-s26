@@ -18,6 +18,7 @@ library(knitr)
 library(tidyverse)
 
 data(planets)
+data(atus_college)
 ```
 
 Let's take a look at data on our solar system. It is organized into a **data matrix**, where:
@@ -52,6 +53,10 @@ Describe some patterns or features you notice about this data.
 
 \newpage
 
+What do you think the `NA` in the `surface_pressure` column means?
+
+\vspace*{2cm}
+
 # Variable types
 
 ![](img/diagram.png){width=5in fig-align="left"}
@@ -66,24 +71,24 @@ A ______________________ variable (sometimes called qualitative) does not have n
 
 - A ______________________ variable is a type of  ______________________ variable with a natural ordering to its possible values.
 
-- A ______________________ variable is a type of  ______________________ variable withouts a natural ordering to its possible values.
+- A ______________________ variable is a type of  ______________________ variable without a natural ordering to its possible values.
 
 For each variable in the `planets` dataset determine its type.
 
 
 \newpage
 
-### OpenIntro Exercise 1.12 UN Votes. 
+### OpenIntro Statistics Exercise 1.12: UN Votes
 
 The visualization below shows voting patterns in the United States, Canada, and Mexico in the United Nations General Assembly on a variety of issues. Specifically, for a given year between 1946 and 2015, it displays the percentage of roll calls in which the country voted yes for each issue. 
 
 ![](img/un-votes.png){width=100%}
 
-(a) Try to draft the data matrix used to produce this visualization, specifically write out the column names and fill in at least four rows.
+Try to draft the data matrix used to produce this visualization, specifically write out the column names and fill in at least four rows.
 
 \vspace*{6cm}
 
-(b) Indicate each variable type.
+Indicate each variable type.
 
 \newpage
 
@@ -91,10 +96,89 @@ The visualization below shows voting patterns in the United States, Canada, and 
 
 If two variables 
 
-- have a correspondence we say they are **associated**. 
-- do not have a correspondence we say they are **not associated**.
+- have a correspondence, we say they are **associated**. 
+- do not have a correspondence, we say they are **not associated**.
 
 Can you think of an unrecorded variable that is likely associated with the mass of a planet or having a ring system?
 
+\vspace*{2cm}
+
+The U.S. Bureau of Labor Statistics publishes the American Time Use Survey which has been subset to include only respondents who are enrolled in college or university. 
+
+```{r}
+#| fig-height: 2.75
+#| fig-width: 6
+#| fig-align: center
+atus_plot1 <- 
+  ggplot(atus_college, aes(x = sleep_time, y = weekly_earnings)) +
+  geom_point() +
+  labs(x = "Time spent sleeping", y = "Weekly Earnings") +
+  theme_bw()
+
+atus_plot2 <- 
+  ggplot(atus_college, aes(x = age, y = weekly_earnings)) +
+  geom_point() +
+  labs(x = "Age", y = "Weekly Earnings") +
+  theme_bw()
+
+gridExtra::grid.arrange(atus_plot2, atus_plot1, nrow = 1)
+```
+
+Does there appear to be an association between weekly earnings and age? If so, would you say it is a **positive association**, meaning that an increase in one variable is associated with an increase in the other, or a **negative association**, meaning increase in one is associated with a decrease in the other?
+
+\vspace*{1.5cm}
+
+Does there appear to be an association between weekly earnings and time spent sleeping? If so, is it positive or negative?
+
+\newpage
+
+If we want to investigate if a change in a variable causes another we call the first variable an **explanatory variable** and the second one the **response variable**.
+
+\begin{center}
+explanatory variable $\rightarrow$ response variable
+\end{center}
+
+Which would you label response and explanatory between weekly earnings and age?
+
+\vspace*{1cm}
+
+# Study types: Experiment versus observational study
+
+In an _________________________ the researchers do not cause any intervention, they collect data in a way that does not directly interfere with how the data arise.
+
+In an _________________________ the researchers cause an intervention and then collect data to investigate possible causal relationships. 
+
+### OpenIntro Statistics Exercise 1.4: Buteyko method 
+
+The Buteyko method is a shallow breathing technique developed by Konstantin Buteyko, a Russian doctor, in 1952. Anecdotal evidence suggests that the Buteyko method can reduce asthma symptoms and improve quality of life. In a scientific study to determine the effectiveness of this method, researchers recruited 600 asthma patients aged 18-69 who relied on medication for asthma treatment. These patients were randomly split into two research groups: one practiced the Buteyko method and the other did not. Patients were scored on quality of life, activity, asthma symptoms, and medication reduction on a scale from 0 to 10. On average, the participants in the Buteyko group experienced a significant reduction in asthma symptoms and an improvement in quality of life.
+
+Identify the main research question of the study. 
+
+\vspace*{1.5cm}
+
+Was this an experimental or observational study? Is there potential for a causal conclusion?
+
+\vspace*{1.5cm}
+
+Who are the subjects (observational units) in this study, and how many are included?
 
 
+### OpenIntro Statistics Exercise 1.3 Air pollution and birth outcomes
+
+Researchers collected data to examine the relationship between air pollutants and preterm births in Southern California. During the study air pollution levels were measured by air quality monitoring stations. Specifically, levels of carbon monoxide were recorded in parts per million, nitrogen dioxide and ozone in parts per hundred million, and coarse particulate matter (PM10) in μg/m3. Length of gestation data were collected on 143,196 births between the years 1989 and 1993, and air pollution exposure during gestation was calculated for each birth. The analysis suggested that increased ambient PM10 and, to a lesser degree, CO concentrations may be associated with the occurrence of preterm births.
+
+Identify the main research question of the study.
+
+\vspace*{2cm}
+
+Was this an experimental or observational study? Is there potential for a causal conclusion?
+
+\vspace*{2cm}
+
+Who are the subjects in this study, and how many are included?
+
+\vspace*{2cm}
+
+# Self checkin
+
+How are you feeling about today's lecture? What do you feel you understand the best from today's content and what do you feel you understand the least? Was any of it already familiar to you?
