@@ -1,0 +1,100 @@
+---
+title: "MATH 201: Lecture 1b Handout"
+subtitle: "Section 1.2 Data Basics"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+---
+
+\vspace*{-2cm}
+
+Name:_________________________________ Date:__________________
+
+```{r}
+library(hellodatascience)
+library(knitr)
+library(tidyverse)
+
+data(planets)
+```
+
+Let's take a look at data on our solar system. It is organized into a **data matrix**, where:
+
+- each row is called a ________________________.
+
+- each column is called a ________________________.
+
+```{r}
+kable(planets)
+```
+
+It is always good to look for a description of your data to better understand how the data was collected and on whom/what.
+
+```{r}
+data.frame(
+  variable = colnames(planets),
+  description = c(
+    "Name of planet",
+    "Mass in 10^24 kg",
+    "Length of day in hours",
+    "Whether mean temperature in Celsius is positive or not",
+    "Number of moons",
+    "Whether the planet has a set of rings around it",
+    "Surface pressure in bars"
+  )
+) |> 
+  kable()
+```
+
+Describe some patterns or features you notice about this data.
+
+\newpage
+
+# Variable types
+
+![](img/diagram.png){width=5in fig-align="left"}
+
+A ______________________ variable (sometimes called quantitative) has numeric meaning and we can do mathematical operations with it.
+
+- A ______________________ variable is a type of  ______________________ variable with a finite or countable number of possibilities.
+
+- A ______________________ variable is a type of  ______________________ variable with an infinite number of possibilities.
+
+A ______________________ variable (sometimes called qualitative) does not have numeric meaning, even if it is recorded as a number, and we cannot do mathematical operations with it.
+
+- A ______________________ variable is a type of  ______________________ variable with a natural ordering to its possible values.
+
+- A ______________________ variable is a type of  ______________________ variable withouts a natural ordering to its possible values.
+
+For each variable in the `planets` dataset determine its type.
+
+
+\newpage
+
+### OpenIntro Exercise 1.12 UN Votes. 
+
+The visualization below shows voting patterns in the United States, Canada, and Mexico in the United Nations General Assembly on a variety of issues. Specifically, for a given year between 1946 and 2015, it displays the percentage of roll calls in which the country voted yes for each issue. 
+
+![](img/un-votes.png){width=100%}
+
+(a) Try to draft the data matrix used to produce this visualization, specifically write out the column names and fill in at least four rows.
+
+\vspace*{6cm}
+
+(b) Indicate each variable type.
+
+\newpage
+
+# Relationships between variables
+
+If two variables 
+
+- have a correspondence we say they are **associated**. 
+- do not have a correspondence we say they are **not associated**.
+
+Can you think of an unrecorded variable that is likely associated with the mass of a planet or having a ring system?
+
+
+
