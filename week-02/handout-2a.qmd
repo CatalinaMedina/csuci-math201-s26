@@ -22,7 +22,7 @@ library(knitr)
 library(tidyverse)
 ```
 
-# Learning goals for today
+## Learning goals for today
 
 By the end of this lecture, you should be able to:
 

@@ -1,0 +1,209 @@
+---
+title: "MATH 201: Lecture 2b Handout"
+subtitle: "Section 1.4 Experiments"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+    geometry:
+      - top=0.5in
+---
+
+\newcommand{\blank}{\rule{2.5cm}{0.15mm}}
+
+\vspace*{-2cm}
+
+Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+```{r}
+library(hellodatascience)
+library(knitr)
+library(tidyverse)
+```
+
+## Learning goals for today
+
+By the end of this lecture, you should be able to:
+
+- Distinguish between an **observational study** and an **experiment**
+- Identify the **explanatory** and **response** variables in an experiment
+- Explain what **random assignment** does and why it matters
+- Describe **confounding variables** and how experiments control for them
+- Explain the role of **control groups**, **placebos**, and **blinding**
+
+
+## The Sneakers and Speed thought experiment
+
+Consider the following research question: do good running shoes make people run faster? Say we collected a sample and saw that people with better running shoes tended to have lower mile times.
+
+- Response variable:
+
+- Explanatory variable:
+
+
+### Observational study version
+
+Suppose people in the study brought their own shoes. Answer the following:
+
+
+- Who is more likely to wear good running shoes?
+
+
+\vspace{0.75cm}
+
+
+- What variable(s) might affect *both* shoe choice and running speed?
+
+
+\vspace{0.75cm}
+
+
+This variable is called a **confounding variable**. Confounding variables can make it appear that there is a relationship between another two variables, when there is not. 
+
+- We cannot control for confounding in observational studies, so we **cannot a make causal conclusion from an observational study!**
+
+### Experimental version (random assignment)
+
+Now suppose we **randomly assign** people to wear either good shoes or regular shoes. Answer the following:
+
+- Does athletic ability determine who gets good shoes? Yes / No
+
+
+- What does random assignment do to athletic ability across groups?
+
+
+\vspace{0.5cm}
+
+
+Complete the sentence: *Random assignment helps control for confounding because it*: 
+
+
+\vspace{0.75cm}
+
+
+##  Key components of an experiment: 
+
+Match each term in the **left column** with the correct description in the
+**right column**. Write the letter of the description next to each term.
+
+\begin{center}
+\begin{tabular}{p{0.42\textwidth} p{0.52\textwidth}}
+\textbf{Terms} & \textbf{Descriptions} \\[0.3em]
+
+1. Treatment \hfill \rule{1cm}{0.15mm}
+& A. A numerical summary that describes a population \\[0.6em]
+
+2. Control group \hfill \rule{1cm}{0.15mm}
+& B. When neither participants nor researchers know who receives which treatment \\[0.6em]
+
+3. Placebo \hfill \rule{1cm}{0.15mm}
+& C. A variable related to both the explanatory variable and the response that can distort results \\[0.6em]
+
+4. Random assignment \hfill \rule{1cm}{0.15mm}
+& D. A fake or inactive treatment designed to look like the real one \\[0.6em]
+
+5. Blinding \hfill \rule{1cm}{0.15mm}
+& E. A process that assigns individuals to groups by chance to reduce confounding \\[0.6em]
+
+6. Double-blind experiment \hfill \rule{1cm}{0.15mm}
+& F. A subset of the population that is actually observed \\[0.6em]
+
+7. Confounding variable \hfill \rule{1cm}{0.15mm}
+& G. The condition applied to individuals in an experiment \\[0.6em]
+
+8. Statistic \hfill \rule{1cm}{0.15mm}
+& H. When participants do not know which treatment group they are in \\[0.6em]
+
+9. Parameter \hfill \rule{1cm}{0.15mm}
+& I. A group that does not receive the treatment and is used for comparison
+\end{tabular}
+\end{center}
+
+
+### Example: Does chewing caffeine gum improve reaction time compared to regular gum?
+
+Researchers recruit 120 college students to participate in a reaction-time study. Students are randomly assigned to one of two groups:
+
+- One group chews caffeine gum before completing a reaction-time task.
+- The other group chews regular gum that looks and tastes the same but contains no caffeine.
+
+Neither the students nor the researchers administering the task know which type of gum each student receives. After chewing the gum, all students complete the same computerized reaction-time test.
+
+Identify the components of the study:
+
+- Response variable:
+
+- Explanatory variable:
+  
+  - Treatment group:
+
+  - Control group:
+  
+      - Placebo (if used):
+
+- Blinding (if used): 
+
+- Study type:
+
+Scope of inference:
+
+Will the findings of this study be generalizable to the population of interest? If so, why?
+
+\vspace*{1.5cm}
+
+Is there the potential for a causal conclusion? If so, why?
+
+\vspace*{1.5cm}
+
+## Applet: Hand-selected mice vs. random assignment
+
+We will examine a simulation that compares **hand-selected groups** to **randomly assigned groups** of mice.
+
+### Before running the applet (predict)
+
+When researchers **hand-pick** mice into treatment groups, what is likely to happen?
+
+
+- ☐ Groups may differ in important ways
+- ☐ Groups will be balanced automatically
+- ☐ Confounding is unlikely
+
+
+Explain briefly:
+
+
+\vspace{0.6cm}
+
+
+### After running the applet (observe)
+
+<https://psu-eberly.shinyapps.io/Mouse_Experiment_on_Random_Assignment/>  
+When mice are **randomly assigned** to groups:
+
+- ☐ Groups tend to be more similar overall
+- ☐ Groups are guaranteed to be identical
+- ☐ Confounding is eliminated completely
+
+Explain what you observed:
+
+
+\vspace{3cm}
+
+
+We saw an experiment can technically be done without random assignment. Explain why we should do random assignment in an experiment.
+
+\vspace{3cm}
+
+##  Reflection
+
+
+What is **one new idea** from today's class?
+
+
+\vspace{2cm}
+
+
+What is **one question** you still have about experiments?
+
+
