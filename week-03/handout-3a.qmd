@@ -1,0 +1,209 @@
+---
+title: "MATH 201: Lecture 3a Handout"
+subtitle: "Section 2.1 Examining numerical data"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+    geometry:
+      - top=0.5in
+---
+
+\newcommand{\blank}{\rule{2.5cm}{0.15mm}}
+
+\vspace*{-2cm}
+
+Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+```{r}
+library(tidyverse)
+```
+
+## Learning goals for today
+
+By the end of this lecture, you should be able to:
+
+-   Describe the shape, center, spread, and unusual features of a numerical distribution
+-   Choose an appropriate graph for numerical data
+-   Explain how outliers and skewness affect numerical summaries
+-   Decide when to use robust statistics vs non-robust
+
+```{r}
+#| label: setup
+library(openintro)
+library(tidyverse)
+library(ggplot2)
+
+# Set a clean theme for the handout
+theme_set(theme_minimal(base_size = 12))
+```
+
+We will start by using a dataset containing a a random sample of 50 emails, `email50`.
+
+## Scatterplots & Relationships
+
+Before analyzing a single variable, we often look at how two numerical variables interact.
+A **Scatterplot** provides a case-by-case view of data for two numerical variables.
+
+```{r}
+#| label: fig-scatterplot
+#| fig-cap: "Scatterplot of Line Breaks vs. Character Count in the email50 dataset."
+#| fig-height: 3.5
+
+ggplot(email50, aes(x = num_char, y = line_breaks)) +
+  geom_point(alpha = 0.7, color = "#2c3e50") +
+  labs(x = "Number of Characters (in thousands)", 
+       y = "Number of Line Breaks",
+       title = "Association: Positive & Linear") +
+  geom_smooth(method = "lm", se = FALSE, color = "firebrick", linetype = "dashed")
+```
+
+### Key Concepts
+
+-   **Association:**
+    -   **Positive:** As $x$ increases, $y$ tends to increase.
+    -   **Negative:** As $x$ increases, $y$ tends to decrease.
+-   **Linearity:** Does the trend follow a straight line (linear) or a curve (nonlinear)?
+
+::: callout-warning
+## Key Limitation: Correlation $\neq$ Causation
+
+An association in a scatterplot does not imply that changing $x$ causes a change in $y$.
+:::
+
+## Visualizing a single variable
+
+Looking at the **dot plot**, where each dot is a datapoint, of number of characters in an email:
+
+::: {layout-ncol="2"}
+::: {#first-column}
+```{r}
+#| fig-width: 2
+#| fig-height: 2
+# Dot Plot
+ggplot(email50, aes(x = num_char)) +
+  geom_dotplot(binwidth = 2, fill = "steelblue", color = "white") +
+  labs(x = "Num Char", y = NULL) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+```
+:::
+
+::: {#second-column}
+-   Where do most values seem to fall?
+
+\vspace{0.5cm}
+
+-   Are there values that seem unusual/extreme relative to the rest of the data?
+
+\vspace{0.5cm}
+
+-   Would you say there are multiple peaks to the data? If so, how many?
+
+:::
+:::
+
+\vspace{0.5cm}
+
+We will learn some vocabulary to help us describe data. There are a lot of software and AI tools available to help us compute summary statistics, so in this class we will focus on understanding them.
+
+### Center
+
+-   **Mean:** The arithmetic average = sum your data and divide by the number of data points: $\bar{x} = (x_1 + x_2 + ... + x_n) / n$
+
+-   **Median:** The midpoint of your data.
+
+The mean number of characters per email is `r round(mean(email50$num_char), 2)` and the median is `r round(median(email50$num_char), 2)`. Why do you think these differ?
+
+\vspace*{0.5cm}
+
+### Spread (Variability)
+
+-   **Standard Deviation (SD):** "Average" distance from the mean.
+-   **IQR:** Range of the middle 50% of data.
+
+For number of characters per email the standard deviation and IQR are `r round(sd(email50$num_char), 2)` and `r round(diff(quantile(email50$num_char, probs = c(0.25,  0.75) )), 2)`, respectively. In the plot we see the maximum number of characters in an email is around 64. If it were instead 600, how would the standard deviation and IQR change, if at all?
+
+\vspace*{1.5cm}
+
+### Shape (Skewness & Modality)
+
+-   **Right Skewed:** Tail extends to the right (positive). Typical of income, house prices. ($Mean > Median$).
+-   **Left Skewed:** Tail extends to the left (negative). Typical of easy test scores. ($Mean < Median$).
+-   **Symmetric:** Data mirrors around the center.
+-   **Modality:** Unimodal (1 peak), Bimodal (2 peaks), Multimodal (many peaks).
+
+How would you describe the shape of the distirbution of number of characters per email?
+
+\vspace{1cm}
+
+
+## Plot options for a single numeric variable
+
+| Feature | Dot Plot | Histogram | Box Plot |
+|:-----------------|:-----------------|:-----------------|:-----------------|
+| **Best Use** | Small datasets ($n < 50$) | Large datasets ($n > 50$) | Comparing groups & spotting **outliers** |
+| **Visual** | Shows **exact** values (dots). | Groups values into **bins** (bars). | Shows **quartiles** and whiskers. |
+| **Concept** | Preserves individual data points. | Shows **data density** (Shape). | Shows **spread** (IQR) & **Median**. |
+
+```{r}
+#| label: fig-distribution-comparison
+#| fig-subcap: 
+#|   - "Dot Plot"
+#|   - "Histogram"
+#|   - "Box Plot"
+#| layout-ncol: 3
+#| fig-alt: "Three side-by-side charts (Dot Plot, Histogram, Box Plot) displaying the distribution of character counts for 50 emails. All three visualizations reveal a strongly right-skewed distribution with a single peak (unimodal) at the low end (0-10k characters). The Dot Plot shows a dense cluster of points on the left with a long, sparse tail to the right. The Histogram confirms this with a tall bar at the lowest bin and rapidly decreasing frequency. The Box Plot highlights several outliers extending far to the right of the median, indicating the presence of unusually long emails."
+#| fig-height: 3
+
+# Dot Plot
+ggplot(email50, aes(x = num_char)) +
+  geom_dotplot(binwidth = 2, fill = "steelblue", color = "white") +
+  labs(x = "Num Char", y = NULL) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+
+# Histogram
+ggplot(email50, aes(x = num_char)) +
+  geom_histogram(binwidth = 5, fill = "steelblue", color = "white") +
+  labs(x = "Num Char", y = "Frequency")
+
+# Box Plot
+ggplot(email50, aes(x = num_char)) +
+  geom_boxplot(fill = "lightblue", color = "#2c3e50") +
+  labs(x = "Num Char", y = NULL) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+```
+
+An **outlier** is an observation that appears extreme relative to the rest of the data. What is an outlier in the number of characters data?
+
+### Example: Exam scores
+
+Let's consider another example. Imagine we had exam scores for a test that turned out to be really easy. 
+
+0, 78, 82, 85, 88,
+90, 91, 92, 93, 94,
+95, 96, 97, 98, 99
+
+Create a dot plot for this data.
+
+\vspace{5cm}
+
+What is the median exam score? Approximately what do you think the mean exam score is?
+
+\vspace{2cm}
+
+```{r}
+#| echo: false
+exam_scores <- c(0, 78, 82, 85, 88,
+90, 91, 92, 93, 94,
+95, 96, 97, 98, 99)
+
+exam_score_sd <- round(sd(exam_scores), 2)
+exam_score_iqr <- round(diff(quantile(exam_scores, probs = c(0.25,  0.75) )), 2)
+```
+
+Do you think the standard deviation or IQR for exam scores will be larger? Why?
+
+\vspace{2cm}
+
+Sketch a box plot for this data.
