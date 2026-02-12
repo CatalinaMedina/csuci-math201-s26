@@ -1,0 +1,297 @@
+---
+title: "MATH 201: Lecture 3b Handout"
+subtitle: "Section 2.1 Considering categorical data"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+    geometry:
+      - top=0.5in
+---
+
+\newcommand{\blank}{\rule{2.5cm}{0.15mm}}
+
+\vspace*{-2cm}
+
+Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+## Learning goals for today
+
+By the end of this lecture, you should be able to:
+
+- Construct and interpret frequency and relative frequency tables.
+- Create and interpret bar plots.
+- Compare categorical distributions across groups.
+
+```{r}
+#| label: setup
+library(openintro)
+library(tidyverse)
+library(ggplot2)
+library(ggpattern)
+
+# Set a clean theme for the handout
+theme_set(theme_classic(base_size = 16))
+```
+
+## Ways to summarize a single categorical variable
+
+Fill in the blanks for each definition:
+
+ ___________________  is the number/count of observations in each category.
+
+ ______________________  is the proportion of observations in each category.
+
+$$\text{Relative Frequency} = \frac{\text{Frequency}}{\text{Total Number of Observations}}$$
+
+Ex: Say I surveyed 10 students asking if they preferred online, hybrid, or in-person class. Their responses were:\newline
+*In-person, Hybrid, Hybrid, In-person, In-person, Online, In-person, Online, Online, In-person*\newline
+Calculate the frequencies and relative frequencies:
+
+\vspace{1.5cm}
+
+**Bar plots/charts** display frequencies (or relative frequencies) for categories.\newline
+Draw a bar plot for the class preference data.
+
+:::: {layout="[50, 50]"}
+
+::: {#first-column}
+
+```{r}
+#| fig-height: 3
+
+class_survey_df <- data.frame(
+  preference = c("In-person", "Hybrid", "Online"),
+  frequency = c(5, 2, 3)
+)
+ggplot(class_survey_df, aes(x = preference, y = frequency)) +
+  geom_blank() +
+  labs(x = "Preference", y = "Frequency\n\n") +
+  theme(
+  axis.text.y = element_blank(),
+  axis.ticks.y = element_blank()
+)
+```
+
+:::
+
+::: {#second-column}
+
+```{r}
+#| fig-height: 3
+ggplot(class_survey_df, aes(x = preference, y = frequency)) +
+  geom_blank() +
+  labs(x = "Preference", y = "Relative Frequency\n\n") +
+  theme(
+  axis.text.y = element_blank(),
+  axis.ticks.y = element_blank()
+)
+```
+
+:::
+
+::::
+
+## Summarizing two categorical variables
+
+| | Hybrid | In-person | Online |
+|:--------|:--------|:--------|:--------|
+| Less than 2 years | 18 | 22 | 10 |
+| 2+ years | 12 | 28 | 20|
+
+
+Suppose we surveyed more people and also recorded how long they have attended CSUCI. The **two-way contingency table** above shows this data.
+
+1. Add row and column totals to the table.
+
+2. How many students have attended CSUCI for less than 2 years?
+
+3. How many students have attended CSUCI for less than 2 years and prefer hybrid class?
+
+4. Among students who have attended CSUCI for less than 2 years, what proportion prefer: 
+
+hybrid = $\frac{18}{50}$ \hspace{4cm} in-person = \hspace{4cm} online =
+
+\vspace{0.5cm}
+
+5. Among students who have attended CSUCI for more 2+ years, what proportion prefer: 
+
+hybrid = $\frac{12}{60}$ \hspace{4cm} in-person = \hspace{4cm} online =
+
+\vspace{0.5cm}
+
+6. Do the proportions for questions 4 and 5 look similar across the two groups?
+
+**Dodged bar plots** display frequencies and **standardized bar plots** display relative frequencies for two categorical variables.
+
+:::: {layout="[50, 50]"}
+
+::: {#first-column}
+
+```{r}
+#| fig-height: 3
+
+df_prop <- data.frame(
+  years_at_csuci = c("< 2 years", "More than 2 years"),
+  Hybrid   = c(18, 12),
+  `In_person` = c(22, 28),
+  Online   = c(10, 20)
+) |> 
+  pivot_longer(
+    cols = c("Hybrid", "In_person", "Online"),
+    names_to = "preference",
+    values_to = "count"
+  ) |> 
+  mutate(preference = if_else(preference == "In_person", "In-Person", preference))
+
+ggplot(df_prop, aes(
+  x = years_at_csuci,
+  y = count,
+  fill = preference,
+  pattern = preference
+)) +
+  geom_col_pattern(
+    position = position_dodge2(width = 0.9, preserve = "single"),
+    width = 0.8,
+    fill = "white",
+    colour = "black",      # bar outline
+    pattern_fill = "black",
+    pattern_colour = "black",
+    pattern_density = 0.35,
+    pattern_spacing = 0.04
+  ) +
+  # Choose patterns that print clearly
+  scale_pattern_manual(
+    values = c(
+      "Hybrid"    = "stripe",
+      "In-person" = "none",
+      "Online"    = "circle"
+    ),
+    labels = c("", "", "")
+  ) +
+  labs(
+    x = "Time at CSUCI",
+    y = "Frequency",
+    pattern = "Preference"
+  )
+```
+
+:::
+
+::: {#second-column}
+
+```{r}
+#| fig-height: 3
+
+df_prop |> 
+  group_by(years_at_csuci) |>
+  mutate(prop = count / sum(count)) |>
+  ungroup() |> 
+ggplot(aes(
+  x = years_at_csuci,
+  y = prop,
+  fill = preference,
+  pattern = preference
+)) +
+  geom_col_pattern(
+    width = 0.8,
+    fill = "white",
+    colour = "black",      # bar outline
+    pattern_fill = "black",
+    pattern_colour = "black",
+    pattern_density = 0.35,
+    pattern_spacing = 0.04
+  ) +
+  # Choose patterns that print clearly
+  scale_pattern_manual(
+    values = c(
+      "Hybrid"    = "stripe",
+      "In-person" = "none",
+      "Online"    = "circle"
+    ),
+    labels = c("", "", "")
+  ) +
+  labs(
+    x = "Time at CSUCI",
+    y = "Relative frequency",
+    pattern = "Preference"
+  )
+```
+
+:::
+
+::::
+
+Fill in the missing legend labels.
+
+Recall that we say two variables are **associated** if knowing one variable gives some information about the other. Would you say class preference appears to be associated with time at CSUCI? Why or why not?
+
+\vspace{1cm}
+
+## Examing one numerical and one categorical variable
+
+**Side-by-side box plots** are often helpful for examining the relationship between a numerical and a categorical variable.
+
+In this example we will use a dataset of movies. For each movie we have information on their critic score (from 0-100), rating (G, PG, PG-13, or R), and box office earnings (in millions of dollars). 
+
+```{r}
+#| echo: false
+library(openintro)
+library(tidyverse)
+
+data("movies")
+```
+
+
+```{r}
+#| echo: false
+#| fig-align: center
+#| fig-width: 6
+#| fig-height: 2.5
+
+ggplot(movies, aes(x = score, y = rating)) +
+  geom_boxplot()
+```
+
+List 3 factual observations about the plot shown above.
+
+1.
+
+\vspace{1cm}
+
+2.
+
+\vspace{1cm}
+
+3.
+
+\vspace{1cm}
+
+
+Which ratings categories appear to be similar in critic score? Which appear to be the least similar? Does this make sense?
+
+\vspace*{2cm}
+
+## More practice
+
+```{r}
+#| fig-width: 4.25
+#| fig-height: 3
+#| fig-align: center
+ggplot(movies, aes(x = box_office)) +
+  geom_histogram() +
+  labs(x = "Box Office Earnings (in $1,000,000)")
+```
+
+How would you describe the distribution of box office earnings?
+
+\vspace{4cm}
+
+If we doubled the dataset by duplicating every observation, how would the side-by-side box plot of ratings versus critic score change, if at all?
+
+\vspace{2cm}
+
+
+If we doubled the dataset by duplicating every observation, how would the histogram of box office earnings change, if at all?
+
