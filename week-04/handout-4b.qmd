@@ -1,6 +1,6 @@
 ---
-title: "MATH 201: Lecture 4a Handout"
-subtitle: "Section 3.5 Continuous Distributions"
+title: "MATH 201: Lecture 4b Handout"
+subtitle: "Section 3.5 Continuous Disitrbutions and 4.1 Normal Distirbution"
 format: 
   pdf:
     echo: false
@@ -18,67 +18,249 @@ Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\
 
 ## Learning goals for today
 
-By the end of this activity, you should be able to:
+By the end of this lecture, you should be able to:
 
-- Calculate numerical summary statistics (mean, median, standard deviation) and plots using technology.
+- Describe the shape and properties of a normal distribution.
+- Identify the mean and standard deviation on a normal curve.
+- Interpret the Empirical Rule (68–95–99.7 Rule).
+- Standardize a value using a z-score.
+- Interpret a z-score in context.
 
-## Biased AI detection tools data
+```{r}
+library(tidyverse)
+options(scipen = 999)
+```
 
-In this activity, we will analyze a real dataset from a research project studying AI writing detection tools. As AI-generated text becomes more common, several companies and researchers have developed “detectors” that attempt to classify whether a piece of writing was produced by a human or by an AI model. These detectors output a probability score indicating how likely the text is to have been written by AI. The study can be found at: <https://arxiv.org/abs/2304.02819> and a description of the dataset can be found at: <https://github.com/rfordatascience/tidytuesday/blob/main/data/2023/2023-07-18/readme.md>.
+## From Real Data to Models
 
-Each row in our dataset represents one essay that was evaluated by a detector. The variables we will use today are:
+So far in this course, we have worked with real datasets and used histograms to describe:
 
-- kind – Whether the essay was actually written by a Human or by AI.
-- .pred_AI – The detector's predicted probability (between 0 and 1) that the essay was written by AI.
-- .pred_class — the detector’s class decision (AI or Human) using a 0.5 cutoff.
-- detector – The name of the AI detection tool used to generate the prediction.
+- Shape: modality (number of peaks) and symmetric or skewed
+- Unusual features: outliers
 
-For example:
+Suppose we collected exam scores from a large introductory statistics class and made a histogram. Imagine the histogram looks:
 
-- A value of .pred_AI = 0.95 means the detector believes there is a 95% chance the essay was written by AI.
-- A value of .pred_AI = 0.10 means the detector believes there is only a 10% chance the essay was written by AI.
+- Roughly symmetric
+- Unimodal
+- No extreme outliers
+- Most scores clustered near the middle
 
-# Step 0: Load the Data into CODAP
+Sketch what you think this histogram might look like:
 
-1. Go to: https://codap.concord.org/
-2. Click **Launch CODAP** and **Create new document**.
-3. In the top right click the three horizontal bars (the menu), **import**, and **url**.
-4. Paste the dataset URL: <https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2023/2023-07-18/detectors.csv>
-5. Click **Import** and tell it to import all rows.
+\vspace{2.5cm}
 
-What do you notice in the case table (number of rows? columns?)?
+Real histograms are:
 
-\vspace{2cm}
+- Somewhat noisy
+- Dependent on bin width
+- Based on a finite sample
 
-## Part 1: Numerical Summary of AI predictions
-
-1. CLick `Graph` and either drag the `.pred AI` column onto the empty plot or click the x-axis and choose the variable.
-2. In the right panel of the plot click the fourth option (configuration) and select both "Group into Bins" and check "Fuse Dots into Bars". You now have a histrogram!
-3. You can play around with different bin widths (try a few to see the difference). What appears to be a good bin with to visualize the data?
-
-\vspace{2cm}
-
-4. Describe the distribution of prediction probabilities.
-
-\vspace{3cm}
-
-5. In the right panel of the plot click the first option (measure) and select "show measure labels" and both "mean" and "median" under "measures of center". Record the values here.
-
-\vspace{1cm}
-
-6. Click "standard deviation" under "measures of spread". Record the value here:
-
-7. Click "Box plot and normal curve" and select "box plot" to overlay a boxplot. (You can uncheck the measure boxes now to unclutter your plot). Describe some features of your boxplot.
-
-\vspace{3cm}
-
-8. Now drag the `kind` column header from the table onto the plot. Drop it on the right vertical axis (opposite the y-axis) and you should end up with two separate histograms/box plots, one for human created documents, and one for AI created documents. Describe differences between these plots.
-
-\vspace{5cm}
-
-
-9. Now drag the "native" header onto the top of the plot and drop it as the  side-by-side layout by native. Describe each of these plots (You may need to readjust the bin width). Do you think the data suggest bias for non native speakers? Explain your answer either way
+Instead of working with the imperfect histogram directly, we sometimes use a smooth mathematical model that approximates the distribution. 
 
 \newpage
 
-10. Keep exploring the data with CODAP!
+One very important model is the **Normal Distribution**.
+
+```{r}
+#| fig-align: center
+#| fig-height: 1
+#| fig-width: 1.5
+# Create x values
+x <- seq(-4, 4, length.out = 500)
+
+# Standard normal density
+df <- data.frame(
+  x = x,
+  y = dnorm(x)
+)
+
+ggplot(df, aes(x = x, y = y)) +
+  geom_line(size = 1.3) +
+
+  # Only one tick at 0 labeled mu
+  # scale_x_continuous(
+  #   breaks = 0,
+  #   labels = "",
+  #   expand = c(0.02, 0.02)
+  # ) +
+  
+  # Remove y-axis ticks and labels
+  scale_y_continuous(breaks = NULL) +
+  
+  theme_classic(base_size = 14) +
+  theme(
+    axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  )
+```
+
+It is:
+
+- Perfectly symmetric
+- Bell-shaped
+
+If our data is well represented by the normal curve, then we can use the curve describe our data (and more!).
+
+Example: Consider SAT scores with a mean of 1500 and standard deviation of 300
+
+```{r}
+#| echo: false
+#| fig-height: 2
+#| fig-width: 7
+#| fig-align: center
+
+set.seed(468)
+
+sat_scores <- data.frame(x = rnorm(1000, mean = 1500, sd = 300))  
+
+sat_plot1 <- ggplot(sat_scores, aes(x = x)) +
+  geom_histogram() +
+  geom_density() +
+  labs(y = "Count", x = "Sat Score", title = "Data") +
+  theme_minimal()
+
+sat_plot2 <- ggplot(sat_scores, aes(x = x)) +
+  geom_function(fun = dnorm, args = list(mean = 1500, sd = 300)) +
+  theme(
+    axis.text.y=element_blank(),
+    axis.ticks.y=element_blank()
+  ) +
+  labs(y = "Density", x = "Sat Score", title = "Normal Distribution Model") +
+  theme_minimal()
+
+gridExtra::grid.arrange(sat_plot1, sat_plot2, nrow = 1)
+```
+
+
+The normal distribution does not describe every dataset. But it often provides a very good approximation when:
+
+- The data are roughly symmetric
+- There are no extreme outliers
+- The distribution is unimodal (single peak)
+
+For each variable below, do you think the normal distribution is a good approximation? (Hint: first try roughly drawing a histogram to get you thinking about the shape, then think if the three characteristics above describe it well.)
+
+- Heights of adults in the US
+
+\vspace{2cm}
+
+- Number of children in a family
+
+
+\newpage
+
+
+## Features of the normal distirbution
+
+The normal distribution is good for more than just describing a distribution. 
+A normal distribution is a continuous, symmetric, bell-shaped distribution defined by:
+
+- A mean ($\mu$)
+- A standard deviation ($\sigma$)
+
+The mean $\mu$ is the center of the data and the standard deviation $\sigma$ describes the spread of the data. We write $N(\mu, \sigma)$ to describe a normal distribution. We can get different normal distributions depending on the values of $\mu$ and $\sigma$.
+
+```{r}
+#| echo: false
+#| fig-align: center
+p1 <- ggplot(data = data.frame(x = c(0, 200)), aes(x)) +
+  stat_function(fun = dnorm, n = 1001, args = list(mean = 100, sd = 15)) + 
+  labs(
+    y = "",
+    title = expression(paste("N(\u03bc = 100, ", sigma, " = ", 15, ")"))
+  ) +
+  theme_minimal()
+
+p2 <- ggplot(data = data.frame(x = c(0, 200)), aes(x)) +
+  stat_function(fun = dnorm, n = 1001, args = list(mean = 100, sd = 30)) + 
+ labs(
+    y = "",
+    title = expression(paste("N(\u03bc = 100, ", sigma, " = ", 30, ")"))
+    ) +
+  theme_minimal()
+
+p3 <- ggplot(data = data.frame(x = c(0, 200)), aes(x)) +
+  stat_function(fun = dnorm, n = 1001, args = list(mean = 75, sd = 15)) + 
+  labs(
+    y = "",
+    title = expression(paste("N(\u03bc = 75, ", sigma, " = ", 15, ")"))
+  ) +
+  theme_minimal()
+
+
+p4 <- ggplot(data = data.frame(x = c(0, 200)), aes(x)) +
+  stat_function(fun = dnorm, n = 1001, args = list(mean = 75, sd = 30)) + 
+  labs(
+    y = "",
+    title = expression(paste("N(\u03bc = 75, ", sigma, " = ", 30, ")"))
+  ) +
+  theme_minimal()
+
+gridExtra::grid.arrange(p1, p2, p3, p4, ncol = 2, nrow = 2)
+```
+
+Let's focus on the y-axis now. The y-axis of the normal distribution describes the density (where value are likely and unlikely). Think back to the normal distribution model for SAT scores, what SAT score seem more likely and which seem less likely?
+
+\vspace{1.5cm}
+
+
+Key properties of the normal distribution:
+
+- Symmetric around the mean
+- Mean = Median
+- Total area under curve = 1
+
+This means we can use the normal distribution to calculate probabilities, if the normal distribution is a good fit for our variable. Look back to the normal distribution model for SAT scores. Approximately, what is probability of someone scoring:
+
+- less than 1500?
+- more than 500?
+- between 1000 and 2000?
+
+\newpage
+
+We can use the normal distribution to better approximate some probabilities using the **Empirical Rule**! For a normal distribution:
+
+- About 68% of observations fall within 1 standard deviation of the mean.
+- About 95% fall within 2 standard deviations.
+- About 99.7% fall within 3 standard deviations.
+
+```{r}
+#| fig-align: center
+#| fig-height: 2.5
+#| fig-width: 3
+
+knitr::include_graphics("empirical-rule.png")
+```
+
+## Z-scores
+
+The Empirical Rule gives us approximate probabilities, but what if we want something more precise? To answer more specific probability questions, we first convert our value into a z-score.
+
+A **z-score** tells us: How many standard deviations a value is from the mean. We calculate a z-score using:
+$$z = \frac{x - \mu}{\sigma}$$
+
+Where:
+
+- $x$ = observed value
+- $\mu$ = mean
+- $\sigma$ = standard deviation
+
+Interpreting z-scores
+
+- If $z = 0$, the value is exactly at the mean.
+- If $z > 0$, the value is above the mean.
+- If $z < 0$, the value is below the mean.
+
+Recall SAT scores are approximately normally distributed with $\mu = 1500$ and $\sigma = 300$. What is the z-score for a student who scored 1800? Would that student be considered average, below average, or above average?
+
+\vspace{1cm}
+
+What is the z-score for a student who scored 900? What does this tell us about the student?
+
+\vspace{1cm}
+
+Next lecture we will learn how to get probabilities from z-scores!
