@@ -1,0 +1,287 @@
+---
+title: "MATH 201: Lecture 5a Handout"
+subtitle: "4.1 Normal Distirbution Continued"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+    geometry:
+      - top=0.5in
+---
+
+```{r}
+library(tidyverse)
+options(scipen = 999)
+```
+
+\newcommand{\blank}{\rule{2.5cm}{0.15mm}}
+
+\vspace*{-2cm}
+
+Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+## Learning goals for today
+
+By the end of this lecture, you should be able to:
+
+- Explain how z-scores standardize values.
+- Interpret area under a normal curve as probability.
+- Calculate left-tail, right-tail, and between probabilities.
+- Identify and interpret unusually large or small values.
+- Translate probability statements into statistical context.
+
+## Quick Review: Normal Distribution
+
+:::: {layout="[0.6, 0.4]"}
+::: {#firstcol}
+A normal distribution is:
+
+- Symmetric
+- Bell-shaped
+- Defined by mean (μ) and standard deviation (σ)
+- Total area under curve = 1
+
+:::
+
+::: {#seondcol}
+```{r}
+#| fig-align: center
+#| fig-height: 1
+#| fig-width: 1.5
+# Create x values
+x <- seq(-4, 4, length.out = 500)
+
+# Standard normal density
+df <- data.frame(
+  x = x,
+  y = dnorm(x)
+)
+
+ggplot(df, aes(x = x, y = y)) +
+  geom_line(linewidth = 1.3) +
+
+  # Only one tick at 0 labeled mu
+  # scale_x_continuous(
+  #   breaks = 0,
+  #   labels = "",
+  #   expand = c(0.02, 0.02)
+  # ) +
+  
+  # Remove y-axis ticks and labels
+  scale_y_continuous(breaks = NULL) +
+  
+  theme_classic(base_size = 14) +
+  theme(
+    axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  )
+```
+
+:::
+::::
+
+We can approximate probabilities using:
+
+- Empirical Rule (68–95–99.7)
+- Or calculate them more precisely using z-scores (covered today!)
+
+If $X \sim N(\mu, \sigma)$, what is a Z-score?
+$$Z = \frac{x - \mu}{\sigma}$$
+
+\vspace{2cm}
+
+If ACT scores follow a normal distribution with mean 21 and standard deviation 6:
+
+- Compute and interpret the Z-score for someone that scores a 24.
+
+\vspace{3cm}
+
+- Compute and interpret the Z-score for someone that scores a 19.
+
+\vspace{3cm}
+
+- Which score is more unusual, and why?
+
+\vspace{3cm}
+
+## Area under the curve = Probability
+
+Let $X$ represent an ACT score. Shade the area under the curve corresponding to each case, and make a guess at the probability for each case.
+
+```{r}
+#| fig-align: center
+#| fig-height: 1.5
+#| fig-width: 6
+# Create x values
+x <- seq(3, 39, length.out = 500)
+
+# Standard normal density
+df <- data.frame(
+  x = x,
+  y = dnorm(x, mean = 21, sd = 6)
+)
+
+act_curve <- ggplot(df, aes(x = x, y = y)) +
+  geom_line(linewidth = 1.3) +
+  scale_x_continuous(
+    breaks = c(6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36),
+    labels = c("", 9, "", 15, "", 21, "", 27, "", 33, "")
+  ) +
+  scale_y_continuous(breaks = NULL) +
+  theme_classic() +
+  theme(
+    axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank()
+    #axis.ticks.x = element_blank()
+    #axis.text.x = element_blank()
+  ) 
+
+gridExtra::grid.arrange(
+  act_curve + 
+    labs(title = "P(X < 15)"),
+  act_curve + 
+    labs(title = "P(X > 15)"),
+  act_curve  + 
+    labs(title = "P(15 < X < 27)"),
+  nrow = 1
+)
+```
+
+\vspace{2cm}
+
+How do we get those areas/probabilities exactly? **We can use R for calculations!**
+  
+The `pnorm()` function will calculate $P(X < x)$, the probability of being less than a value.
+
+```{r}
+#| echo: true
+pnorm(12, mean = 21, sd = 6)
+```
+
+Calculate the exact probabilities you approximated above using `pnorm()`.
+
+There are a lot of different software applications we can use to do R calculations. I recommend using OneCompiler <https://onecompiler.com/r>
+
+![](img/onecompiler.png){width=600 height=350}
+
+Example: National Center of Education Statistics says that in 2023 national SAT scores had a mean of 1028 and a standard deviation of 221. Assuming that the normal distribution is a good model for SAT scores, for each scenario:
+
+- shade the corresponding region under the curve, and
+- calculate the probability and write the `pnorm()` call you used.
+
+```{r}
+#| fig-align: center
+#| fig-height: 1.5
+#| fig-width: 6
+# Create x values
+x <- seq(365, 1691, length.out = 500)
+
+# Standard normal density
+df <- data.frame(
+  x = x,
+  y = dnorm(x, mean = 1028, sd = 221)
+)
+
+act_curve <- ggplot(df, aes(x = x, y = y)) +
+  geom_line(linewidth = 1.3) +
+  # scale_x_continuous(
+  #   breaks = c(6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36),
+  #   labels = c("", 9, "", 15, "", 21, "", 27, "", 33, "")
+  # ) +
+  scale_y_continuous(breaks = NULL) +
+  theme_classic() +
+  theme(
+    axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank()
+    #axis.ticks.x = element_blank()
+    #axis.text.x = element_blank()
+  ) 
+
+gridExtra::grid.arrange(
+  act_curve + 
+    labs(title = "P(X < 1000)"),
+  act_curve + 
+    labs(title = "P(X > 1500)"),
+  act_curve  + 
+    labs(title = "P(900 < X < 1300)"),
+  nrow = 1
+)
+```
+
+\vspace{1.5cm}
+
+Example: Now assume we have a variable $X \sim N(\mu = 0, \sigma = 1)$, for each scenario:
+
+- shade the corresponding region under the curve, and
+- calculate the probability and write the `pnorm()` call you used.
+
+```{r}
+#| fig-align: center
+#| fig-height: 1.5
+#| fig-width: 6
+# Create x values
+x <- seq(-3, 3, length.out = 500)
+
+# Standard normal density
+df <- data.frame(
+  x = x,
+  y = dnorm(x, mean = 0, sd = 1)
+)
+
+act_curve <- ggplot(df, aes(x = x, y = y)) +
+  geom_line(linewidth = 1.3) +
+  # scale_x_continuous(
+  #   breaks = c(6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36),
+  #   labels = c("", 9, "", 15, "", 21, "", 27, "", 33, "")
+  # ) +
+  scale_y_continuous(breaks = NULL) +
+  theme_classic() +
+  theme(
+    axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank()
+    #axis.ticks.x = element_blank()
+    #axis.text.x = element_blank()
+  ) 
+
+gridExtra::grid.arrange(
+  act_curve + 
+    labs(title = "P(X < -0.1267)"),
+  act_curve + 
+    labs(title = "P(X > 2.1357)"),
+  act_curve  + 
+    labs(title = "P(-0.579 < X < 1.231)"),
+  nrow = 1
+)
+```
+
+
+\vspace{1.5cm}
+
+If $X \sim N(\mu, \sigma)$, then $Z \sim N(0, 1)$. We call this, $N(0, 1)$, a **standard normal**.
+
+We've learned if we know $\mu$ and $\sigma$ for a variable with a normal distribution,
+
+- we can calculate probabilities given values $x$, using `pnorm()`,
+- we can also calculate values $x$, given probabilities, using `qnrom()`!
+
+**Percentiles** are the percent of observations that fall below a given value. For example, the median is the 50th percentile.
+
+Example: Suppose I take the SAT and score at the 75th percentile, what is my score? What percent of people scored higher than me?
+
+\vspace{7cm}
+
+
+Example: Suppose I'm extra competitive and want to score in the top 10% of all SAT scores, what is the minimum score I can get?
+
+
