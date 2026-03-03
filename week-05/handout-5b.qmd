@@ -281,7 +281,7 @@ Is the success–failure condition satisfied? (Why?):
 
 Independence? (Why?):
 
-## Connecting to normal distributions & z-scores (preview)
+## Central Limit Theorem (CLT)
 
 If the conditions are met, we can model:
 
