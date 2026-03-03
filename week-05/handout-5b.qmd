@@ -52,11 +52,11 @@ By the end of this lecture, you should be able to:
 4. Sampling distribution \hfill \rule{1cm}{0.15mm}
 & D. A value computed from a sample that serves to approximate an unknown population value  \\[0.6em]
 
-2. Bias \hfill \rule{1cm}{0.15mm}
+5. Bias \hfill \rule{1cm}{0.15mm}
 & B. A density of all possible values a statistic can take from collecting multiple samples of the same size. \\[0.6em]
 
-4.  \hfill \rule{1cm}{0.15mm}
-& F. Standard deviation of a point estimate.  \\[0.6em]
+6.  \hfill \rule{1cm}{0.15mm}
+& ? F. Standard deviation of a point estimate.  \\[0.6em]
 
 \end{tabular}
 \end{center}
@@ -92,7 +92,7 @@ Suppose I am a picky eater and only like to eat the orange Reese's Pieces candy.
 
 - $\hat{p}$ = 
 
-- Error = $p$ - $\hat{p}$ = 
+- Error = $\hat{p}$ - $p$ = 
 
 2.) After a sample is collected it is thrown back into the candy machine. Click "Draw Samples" again to collect another sample of 25 candies.
 Specify the following values:
@@ -103,7 +103,7 @@ Specify the following values:
 
 - $\hat{p}$ = 
 
-- Error = $p$ - $\hat{p}$ = 
+- Error = $\hat{p}$ - $p$ = 
 
 3. Click "Draw Samples" one more time and specify the following values:
 
@@ -113,7 +113,7 @@ Specify the following values:
 
 - $\hat{p}$ = 
 
-- Error = $p$ - $\hat{p}$ = 
+- Error = $\hat{p}$ - $p$ = 
 
 4.) Now change "Number of samples" to 10, uncheck the "Show animation" box, and under "Choose statistic" set it to "Proportion of orange". Click "Draw Samples". 
 
@@ -147,7 +147,10 @@ How did the mean and standard deviation of $\hat{p}$ change as we collected more
 \vspace{3cm}
 
 
+\newpage
 Below are three histograms of the sampling distribution for $\hat{p}$ all created with $p = 0.5$ and 1063 samples collected each time. The only difference is the number of candies collected in each sample. In one scenario 25 candies were collected each time ($n$), in another 100 candies were sampled each time, and 1000 candies were collected each time in the final case. Identify each plot below as either $n = 25$, $n = 100$, $n = 1000$.
+
+
 
 ::: {layout-ncol=3}
 
@@ -158,6 +161,37 @@ Below are three histograms of the sampling distribution for $\hat{p}$ all create
 ![](img/prop-n-100.png)
 
 :::
+
+```{r}
+#| fig-align: center
+#| fig-height: 3
+#| fig-width: 7
+p <- 0.5
+num_samples <- 1063
+
+data.frame(
+  p_hat = c(
+    rnorm(num_samples, mean = p, sd = sqrt(p * (1 - p) / 25)),
+    rnorm(num_samples, mean = p, sd = sqrt(p * (1 - p) / 1000)),
+    rnorm(num_samples, mean = p, sd = sqrt(p * (1 - p) / 100))
+  ),
+  scenario = c(
+    rep(" ", num_samples),
+    rep("  ", num_samples),
+    rep("   ", num_samples)
+  )
+) |> 
+  ggplot(aes(x = p_hat)) +
+  geom_histogram(color = "white", fill = "black") +
+  facet_wrap(vars(scenario)) +
+  theme_classic() +
+  labs(
+    x = "Proportion of candies that were orange",
+    y = ""
+  )
+  
+```
+
 
 Which scenario provided more accurate estimates of $p$? Explain your answer.
 
@@ -184,16 +218,13 @@ $$
 Suppose $p = 0.50$.
 
 1. Compute $SE_{\hat p}$ when $n=25$:
-
 $$
-SE_{\hat p}=\sqrt{\frac{0.5(0.5)}{25}}=\blank
+SE_{\hat p} = \sqrt{\frac{p (1 - p)}{n}} = \sqrt{\frac{0.5(0.5)}{25}}=\blank
 $$
 
 2. Compute $SE_{\hat p}$ when $n=100$:
 
-$$
-SE_{\hat p}=\sqrt{\frac{0.5(0.5)}{100}}=\blank
-$$
+\vspace{2cm}
 
 3. Which sample size gives a more **precise** estimate? Why?
 
@@ -201,27 +232,29 @@ $$
 
 ## Sampling distribution
 
-The distribution of sample proportions $\hat{p}$ is called the _________________________. In real life it is not actually observed, because we typically only collect one sample, so we should be aware that there is variability in $\hat{p}$. (Fill in the blank.)
+The distribution of sample proportions $\hat{p}$ is called the _________________________. In real life it is not actually observed, because we typically only collect one sample, so we should be aware that there is variability in $\hat{p}$.
 
-For each of the following, circle the option that completes the statement.
+If we were to collect more samples (repeat the sampling process many times):
 
-- If we were to collect a lot of samples the mean of $\hat{p}$'s will be a **more / less** accurate estimate for the true population parameter $p$.
+- The mean of the $\hat{p}$'s across many samples should be **closer** / **further** to $p$.
+- The observed standard deviation of the $\hat{p}$'s should be **closer** / **further** to $\sqrt{p(1-p)/n}$.
 
-- If we were to collect a lot of samples the standard deviation of $\hat{p}$'s will be **smaller / larger**. 
+If we collect more observations per sample (larger sample size $n$):
 
-- If we increase the size of our sample, $n$, our point estimates $\hat{p}$ will become a **more / less** accurate estimate for the true population parameter $p$.
+- The center (mean) of the sampling distribution of $\hat{p}$'s **stays the same** / **changes**.
+- The standard error of $p$ should be **smaller** / **larger**, meaning **more** / **less** precise estimates of $p$.
 
 \newpage
 
 ## When is $\hat p$ approximately normal?
 
-The sampling distribution of $\hat p$ tends to be approximately normal when:
+The sampling distribution of $\hat{p}$ tends to be approximately normal when the following two conditions are met:
 
-### Condition 1: Independence
+1. Independence condition
 
 Each observation in the sample should be an independent draw from the population. The most common way for observations to be considered independent is if they are from a simple random sample.
 
-### Condition 2: Success–failure condition
+2. Success–failure condition
 
 $$
 np \ge 10 \quad \text{and} \quad n(1-p)\ge 10
@@ -244,9 +277,9 @@ Compute:
 - $n\hat p=$
 - $n(1-\hat p)=$
 
-Is the success–failure condition satisfied?: **Yes / No**
+Is the success–failure condition satisfied? (Why?):
 
-Independence: **Yes / No**
+Independence? (Why?):
 
 ## Connecting to normal distributions & z-scores (preview)
 
