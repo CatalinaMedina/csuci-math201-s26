@@ -1,0 +1,216 @@
+---
+title: "MATH 201: Lecture 6a Handout"
+subtitle: "5.2 Confidence Intervals for a Proportion"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+    geometry:
+      - top=0.5in
+      - left=1in
+      - right=1in
+---
+
+```{r}
+library(tidyverse)
+options(scipen = 999)
+
+set.seed(24435)
+```
+
+\newcommand{\blank}{\rule{2.5cm}{0.15mm}}
+
+\vspace*{-2cm}
+
+Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+## Learning goals for today
+
+By the end of today, you should be able to:
+
+- Explain why a confidence interval is more informative than a point estimate.
+- Construct a 95% confidence interval for a population proportion.
+- Interpret what "95% confident" means.
+- Distinguish between sample size (n) and number of samples.
+- Explain how sample size affects interval width.
+
+# 1. Why Not Just Report One Number?
+
+Suppose aviation regulators are studying aircraft safety. They want to estimate the **proportion of flights that result in a major incident**, $p$.
+
+If they take a sample of flights and compute $\hat{p} = 0.000002$, do you just accept that value as $p$?
+
+What if we took another sample of flights and computed $\hat{p} = 0.003$? We know we could get a different value because of variability (randomness) from sampling.
+
+Instead of reporting one number (a point estimate), we want a range of plausible values:
+
+$$\text{Estimate} \pm \text{Margin of Error}$$
+
+What margin of error would you be okay with for the estimate of $p$, the number of flights that result in major incident? 
+
+\vspace{1cm}
+
+From the Central Limit Theorem we know if conditions are met:
+$$
+\hat p \sim N(\mu=p, \sigma = \sqrt{\frac{p(1 - p)}{n}})
+$$
+From the Empirical Rule we also know 95% of the normal distribution is within two standard deviations of the mean (technically 95.45% to be exact). So
+
+
+$$
+\hat{p} \pm 1.96 \times SE,
+$$
+
+where $SE = \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$. This range is called a **95% confidence interval**.
+
+\newpage
+
+The International Air Transport Association (IATA) provides a count of commercial airline flights and incidents/accidents in 2024 (<https://www.iata.org/en/pressroom/2025-releases/2025-02-26-01/>). From the IATA 2024 Annual Safety Report: 40.6 million total flights in 2024 with 46 total accidents (crashes or serious incidents defined in their accident classification) in 2024. Let's use this reports as our sample.
+
+Compute: 
+
+- $n$ = 
+- $\hat{p}$ = 
+
+- $SE$ = 
+
+- 95% confidence interval margin of error = 
+
+- 95% confidence interval = 
+
+Fill in the interpretation:
+
+We are 95% confidence that the true accident rate among flights in 2024 was between ____________ and __________ accidents per million flights.
+
+## What Does 95% Confident Mean?
+
+If we repeated sampling forever and built a 95% confidence interval each time:
+
+- About 95% of intervals would contain the true population proportion.
+- About 5% would miss.
+
+It does NOT mean:
+
+"There is a 95% probability that this specific interval contains p."
+
+The parameter is fixed. The interval is random.
+
+
+## Polling example
+
+Since we typically only have one sample, it can be hard to understand the idea of confidence intervals. Here we will simulate data to try to better understand confidence intervals.
+
+Assume the true population proportion is: $p = 0.60$. We take a sample with $n = 100$.
+
+```{r}
+p_true <- 0.60
+n <- 100
+
+sample_data <- rbinom(n, 1, p_true)
+p_hat <- mean(sample_data)
+SE <- sqrt(p_hat*(1-p_hat)/n)
+ME <- 1.96*SE
+
+conf_int1 <- round(c(p_hat - ME, p_hat + ME), 2)
+```
+
+This gives us one confidence interval $0.6 \pm 1.96 \sqrt{0.6 (1 - 0.6) / n}$, aka (`r conf_int1[1]`, `r conf_int1[2]`). But what if we repeat the polling?
+
+It is crucial to distinguish between:
+
+- **Sample size (n)** = number of observations in a sample (e.g., people in one poll)  
+- **Number of samples** = how many separate samples we collect (e.g., number of times we repeat polling)  
+
+We now simulate 25 different polls, each with n = 100.
+
+```{r}
+num_samples <- 25
+n <- 100
+
+results <- data.frame(
+  sample = 1:num_samples,
+  p_hat = NA,
+  lower = NA,
+  upper = NA
+)
+
+for(i in 1:num_samples){
+  sample_data <- rbinom(n, 1, p_true)
+  p_hat <- mean(sample_data)
+  SE <- sqrt(p_hat*(1-p_hat)/n)
+  ME <- 1.96*SE
+  
+  results$p_hat[i] <- p_hat
+  results$lower[i] <- p_hat - ME
+  results$upper[i] <- p_hat + ME
+}
+```
+
+
+# 4. Visualizing 25 Confidence Intervals
+
+Each horizontal line represents one poll's confidence interval. The dashed vertical line shows the true population proportion.
+
+```{r}
+#| fig-width: 5
+#| fig-height: 3
+ggplot(results, aes(x = p_hat, y = sample)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.2) +
+  geom_vline(xintercept = p_true, linetype = "dashed") +
+  labs(
+    title = "25 Different Samples (n = 100 Each)",
+    x = "Sample Proportion (with 95% CI)",
+    y = "Sample Number"
+  ) +
+  theme_minimal()
+```
+
+What do you observe?
+
+A 95% confidence level refers to the **long-run success rate** of the method. Approximately 95% of the confidence intervals should contain the true proportion $p$.
+
+
+## Effect of sample size
+
+Now let's see what increasing $n$ does. Under the same conditions, let's now have $n = 500$:
+
+```{r}
+#| fig-width: 5
+#| fig-height: 3
+num_samples <- 25
+n <- 500
+
+results <- data.frame(
+  sample = 1:num_samples,
+  p_hat = NA,
+  lower = NA,
+  upper = NA
+)
+
+for(i in 1:num_samples){
+  sample_data <- rbinom(n, 1, p_true)
+  p_hat <- mean(sample_data)
+  SE <- sqrt(p_hat*(1-p_hat)/n)
+  ME <- 1.96*SE
+  
+  results$p_hat[i] <- p_hat
+  results$lower[i] <- p_hat - ME
+  results$upper[i] <- p_hat + ME
+}
+
+ggplot(results, aes(x = p_hat, y = sample)) +
+  geom_point() +
+  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.2) +
+  geom_vline(xintercept = p_true, linetype = "dashed") +
+  labs(
+    title = "25 Different Samples (n = 500 Each)",
+    x = "Sample Proportion (with 95% CI)",
+    y = "Sample Number"
+  ) +
+  theme_minimal() +
+  xlim(c(0.4, 0.8))
+```
+
+What changed? 
