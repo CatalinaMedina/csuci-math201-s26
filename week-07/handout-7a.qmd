@@ -31,7 +31,6 @@ By the end of this lecture, you should be able to:
 - Construct confidence intervals with different confidence levels.
 - Define null and alternative hypotheses.
 - Use a confidence interval to evaluate a hypothesis test.
-- Interpret Type I and Type II errors in context.
 
 ## Changing the confidence level
 
