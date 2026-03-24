@@ -1,0 +1,250 @@
+---
+title: "MATH 201: Lecture 8a Handout"
+subtitle: "6.1 Inference for a single proportion"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+    geometry:
+      - top=0.5in
+      - left=1in
+      - right=1in
+---
+
+```{r}
+library(tidyverse)
+options(scipen = 999)
+```
+
+\newcommand{\blank}{\rule{2.5cm}{0.15mm}}
+
+\vspace*{-2cm}
+
+Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+## Learning goals for today
+
+By the end of this lecture, you should be able to:
+
+- Describe how confidence intervals and hypothesis tests are centered on the idea of a sampling distribution.
+- Explain differences between hypothesis tests and confidence intervals.
+- Identify whether a confidence interval or a hypothesis test would be most appropriate to answer a given research question.
+
+# Back to Orange Candies
+
+Recall the Reese's Pieces simulation:
+
+- True proportion of orange candies: $p = 0.50$
+- We collected a bunch of samples
+- For each sample we computed $\hat{p}$ and plotted it
+
+When we repeatedly sampled:
+
+- Did we always get the same $\hat{p}$? 
+
+\vspace{0.5in}
+
+- Where were most $\hat{p}$’s located?  
+
+\vspace{0.5in}
+
+This creates a **sampling distribution of $\hat{p}$**. We now know not to rely on a single sample statistic too heavily, because it could be an unusual value for the sample distribution.
+
+When independence and success failure ($n \times p \geq 10$ and $n \times (1 - p) \geq 10$) conditions are met:
+
+$$
+\hat{p} \sim Normal(\mu = \_\_\_\_\_\_\_\_, \sigma = \_\_\_\_\_\_\_\_).
+$$
+
+\newpage
+
+# How can we use a single sample?
+
+We take a random sample of $n = 100$ candies and find 56 of them are orange.
+
+## Confidence Interval for a Population Proportion $p$
+
+If we want to estimate $p$, the population proportion, using our sample, we can compute a confidence interval.
+
+Independence condition: We have a random sample, so this is condition should be met.  
+Success-failure condition: $n \times \hat{p} = 100 * \frac{56}{100} = 56 \geq 10 \checkmark$ and $n \times (1 - \hat{p}) = 100 * (1 - \frac{56}{100}) = 44 \geq 10 \checkmark$, so this condition is met.
+
+Since conditions are met:
+$$\hat{p} \overset{Approximately}{\sim} Normal\left(\mu = p, \sigma = \sqrt{\frac{\hat{p}(1 - \hat{p})}{n}}\right).$$
+
+Our 95\% confidence interval:
+\begin{equation*}
+  \begin{split}
+    &\hat{p} \pm 1.96 \times \sqrt{\frac{\hat{p} \times  (1 - \hat{p})}{n}}\\
+    &\frac{56}{100} \pm 1.96 \times \sqrt{\frac{\frac{56}{100} \times  (1 - \frac{56}{100})}{100}}\\
+    &0.56 \pm 1.96 \times \sqrt{\frac{0.56 \times  (1 - 0.56)}{100}}\\
+    &0.56 \pm 1.96 \times 0.049639\\
+    &0.56 \pm 0.1\\
+    &(0.56 - 0.1, 0.56 + 0.1)\\
+    \Rightarrow p \text{ is between } &(0.46, 0.66) \text{ with 95\% confidence.}
+  \end{split}
+\end{equation*}
+
+Label the curves for $Z\sim N(\mu=0, \sigma = 1)$ and for $\hat{p}\sim N(\mu = p, \sigma = \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}})$, marking: the center, the confidence interval, and the area between the interval upper and lower bounds.
+
+```{r}
+#| fig-align: center
+#| fig-height: 1
+#| fig-width: 4
+# Create x values
+x <- seq(-4, 4, length.out = 500)
+
+# Standard normal density
+df <- data.frame(
+  x = x,
+  y = dnorm(x)
+)
+
+blank_plot <- ggplot(df, aes(x = x, y = y)) +
+  geom_line(linewidth = 1.3) +
+  # Only one tick at 0 labeled mu
+  # scale_x_continuous(
+  #   breaks = 0,
+  #   labels = "",
+  #   expand = c(0.02, 0.02)
+  # ) +
+  
+  # Remove y-axis ticks and labels
+  scale_y_continuous(breaks = NULL) +
+  theme_classic(base_size = 14) +
+  theme(
+    axis.title = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.line.y = element_blank(),
+    axis.ticks.x = element_blank(),
+    axis.text.x = element_blank()
+  )
+
+gridExtra::grid.arrange(blank_plot, blank_plot, nrow = 1)
+```
+
+\newpage 
+
+## Hypothesis Test for a Population Proportion $p$
+
+Suppose we wanted to test the claim that the true proportion of orange candies, $p$, is not 0.5. We could use a hypothesis test to formally test this with significance level 0.05.
+
+#### Step 1: State Hypotheses
+
+$$
+H_0: p = 0.50 \quad \quad H_A: p \neq 0.50
+$$
+
+#### Step 2: Check Conditions
+
+Independence condition: We have a random sample, so this is condition should be met.  
+Success-failure condition: $n \times p_0 = 100 * 0.5 = 50 \geq 10 \checkmark$ and $n \times (1 - p_0) = 100 * (1 - 0.5) = 50 \geq 10 \checkmark$, so this condition is met.
+
+Since conditions are met:
+$$\hat{p} \overset{Approximately}{\sim} Normal\left(\mu = p_0, \sigma = \sqrt{\frac{p_0(1 - p_0)}{n}}\right).$$
+
+#### Step 3: Calculate Evidence
+
+Then we can compute a Z-score:
+$$
+Z = \frac{\hat{p} - p_0}{\sqrt{\frac{p_0 \times (1 - p_0)}{n}}} = \frac{0.56 - 0.5}{\sqrt{\frac{0.5 \times (1 - 0.5)}{100}}} = \frac{0.06}{0.05} = 1.2
+$$
+
+So our sample proportion $\hat{p} = 0.56$ is 1.2 standard deviations above the hypothesized average $p_0 = 0.5$.
+
+We can compute how unlikely results as or more extreme as what we observed are, if the null hypothesis (i.e. $p = 0.5$) were true: 
+
+2 $\times$ (1 - `pnorm(0.56, mean = 0.5, sd = 0.05`) = 2 $\times$ (1 - 0.8849) = 2 $\times$ 0.1151  = 0.2302.
+
+```{r}
+#| fig-align: center
+#| fig-height: 1
+#| fig-width: 2.5
+blank_plot
+```
+
+
+```{r}
+#| echo: false
+#| eval: false
+2 * (1 - pnorm(0.56, mean = 0.5, sd = 0.05))
+```
+
+#### Step 4: Decide & Conclude
+
+Statistical decision: 
+
+It is not that unlikely to get data like we got, or more extreme, if $H_0$ is true. p-value = 0.2302 > $\alpha = 0.05$ so fail to reject $H_0$.
+
+Conclusion in context:
+
+We failed to find evidence that the true proportion of candies that are orange is not 0.5 (p-value = 0.2302).
+
+\newpage
+
+# Connecting ideas
+
+## Same model, different questions
+
+| Goal | What we do | Key question | Results |
+|------|------------|--------------|----------|
+| Estimate $p$ | Confidence interval | "What values of $p$ are plausible?" | (0.46, 0.66) |
+| Test a claim | Hypothesis test | "Is this value plausible?" | Fail to reject $H_0: p = 0.5$
+
+
+## Compare the results
+
+Is $0.5$ inside the confidence interval (aka is it a plausible value)?
+
+These are not separate methods—they come from the **same underlying model!**
+
+
+## What is the SAME? What is DIFFERENT?
+
+Both methods rely on:
+
+- Conditions: independence and success-failure
+- Sampling distribution of $\hat{p} \sim Normal (\mu = p, \sigma = \sqrt{\frac{p(1-p)}{n}})$  
+
+For computation:
+
+| Method | Value used as $p$ |
+|--------|------------|
+| Confidence interval | \_\_\_\_\_\_\_\_\_\_ |
+| Hypothesis test | \_\_\_\_\_\_\_\_\_\_ |
+
+
+## Final Connection
+
+Complete the sentence:
+
+> Statistical inference for a proportion works because...
+
+
+\newpage
+
+# Study design: Sample size calculation
+
+How can we know how large of a sample $n$ we need to collect? If we know the maximum margin of error we want, we can solve for $n$. 
+
+Suppose we were setting up our study and wanted to know how big of a sample is required to ensure the margin of error is smaller than 0.04 using a 95% confidence level for the true proportion of orange candies?
+
+We know the margin of error for a 95% confidence interval for a proportion is $1.96 * \sqrt{\frac{p(1 - p)}{n}} < 0.04$.
+It turns out that the margin of error is largest when $p$ is 0.5, so we typically use this worst case value if no estimate of the proportion is available.
+
+\begin{equation*}
+  \begin{split}
+    1.96 * \sqrt{\frac{p(1 - p)}{n}} &< 0.04\\
+    1.96 * \sqrt{\frac{0.5 \times (1 - 0.5)}{n}} &< 0.04\\
+    1.96 * \sqrt{\frac{0.25}{n}} &< 0.04\\
+    \sqrt{\frac{0.25}{n}} &< 0.02041\\
+    \frac{0.25}{n} &< 0.02041^2\\
+    \frac{0.25}{n} &< 0.00042\\
+    n & >  \frac{0.25}{0.00042}\\
+    n & >  595.24\\
+  \end{split}
+\end{equation*}
+
+So we would need a minimum of 596 candies to have a 95% confidence interval with a margin of error of 0.04.
