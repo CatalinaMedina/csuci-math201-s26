@@ -1,0 +1,184 @@
+---
+title: "MATH 201: Lecture 8b Handout"
+subtitle: "6.2 Inference for two proportions"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+    geometry:
+      - top=0.5in
+      - left=1in
+      - right=1in
+---
+
+```{r}
+library(tidyverse)
+options(scipen = 999)
+```
+
+\newcommand{\blank}{\rule{2.5cm}{0.15mm}}
+
+\vspace*{-2cm}
+
+Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+## Learning goals for today
+
+By the end of this lecture, you should be able to:
+
+- Identify the sampling distribution of $\hat{p}_1 - \hat{p}_2$
+- Check conditions for inference with two proportions
+- Construct and interpret a confidence interval for $p_1 - p_2$
+- Interpret and label components of a two-proportion hypothesis test
+- Summarize the full inference procedures
+
+## Parameter of interest
+
+Previously, we focused on a single proportion $p$. Often times we want to compare two proportions. We can do this by doing inference (i.e. confidence intervals or hypothesis tests) for the difference of the two proportions:
+$$p_1 - p_2$$
+**Example**:\newline
+Let $p_{\text{California}}$ be the proportion of Californians that get the recommended amount of sleep, and let $p_{\text{Alaskans}}$ be the proportion of Alaskans that get the recommended amount of sleep. Suppose we were interested in seeing these proportions differ, or if the same proportion of residents get enough sleep in both states.
+
+For each case decide if $p_{\text{California}} - p_{\text{Alaskans}}$ will be less than zero, equal to zero, greater than zero.
+
+If the same proportion of residents get enough sleep in both states:
+
+\vspace{1cm}
+
+If more Californians get enough sleep than Alaska residents do:
+
+\vspace{1cm}
+
+If more Alaskans get enough sleep than California residents do:
+
+\vspace{1cm}
+
+### Conditions for Inference
+
+**1. Two independent samples** - To assess this we want two separate random samples. 
+
+**2. Success–Failure** (check both groups):\newline
+\hspace{1cm} Group 1: $n_1 p_1 \ge 10$ and $n_1 (1-p_1) \ge 10$\newline
+\hspace{1cm} Group 2: $n_2 p_2 \ge 10$ and $n_2 (1-p_2) \ge 10$
+
+### Sampling Distribution
+
+When the conditions for inference are met:
+$$
+\hat{p}_1 - \hat{p}_2 \overset{approximately}{\sim} \text{Normal} \left(p_1 - p_2, \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}\right)
+$$
+
+## Confidence interval example
+
+A survey asked 827 randomly sampled registered voters in California "Do you support? Or do you oppose? Drilling for oil and natural gas off the Coast of California? Or do you not know enough to say?" Below is the distribution of responses, separated based on whether or not the respondent graduated from college.
+
+| | College Grad | Non-College Grad |
+|:-----------|:-----|:-----|
+| Support | 154 | 132 |
+| Oppose | 180 | 126 |
+| Do not know | 104 | 131 |
+|-------------------|----------|----------
+| Total | 438 | 389 |
+
+What percent of college graduates and what percent of the non-college graduates in this sample do not know enough to have an opinion on drilling for oil and natural gas off the Coast of California?
+
+- $\hat{p}_{\text{grad}} =$ 
+
+- $\hat{p}_{\text{no grad}} =$
+
+We want to use this data to estimate the difference in proportion that say they do not know enough, between college graduates and non-college graduates, so will compute a confidence interval for $p_{\text{grad}} - p_{\text{no grad}}$
+
+First we need to start by checking the conditions:
+
+\vspace{4in}
+
+**Confidence Interval for $p_1 - p_2$**
+
+The steps to get a confidence interval is the same as for a single proportion:
+
+$$\text{point estimate} \pm z^* \times SE$$
+
+\vspace{1cm}
+
+Compute the standard error for our sample.
+
+\vspace{1.5in}
+
+Use that standard error to compute a 95% confidence interval.
+
+\vspace{2.5in}
+
+Interpret the confidence interval in context.
+
+\vspace{3in}
+
+\newpage
+
+## Hypothesis Test for $p_1 - p_2$
+
+Let's now go through and do a hypothesis test for a difference in these proportions. In this class we will only focus on the most common case for hypothesis test: seeing if we can find evidence that the proportions are not equal.
+
+$$H_0: p_1 - p_2 = 0$$
+$$H_A: p_1 - p_2 \neq 0$$
+
+When we assume the null hypothesis is true, that means the samples are supposed to be from the same population, so we use $\hat{p}_{\text{pooled}}$ instead of $\hat{p}_1$ and $\hat{p}_2$ in our calculations.
+$$
+\hat{p}_{pooled} = \frac{\text{total "successes"}}{\text{total cases}}
+$$
+
+This means our Z-score (more generally called out "test statistic") is
+$$
+Z = \frac{X - \mu}{\sigma} = \frac{(\hat{p}_1 - \hat{p}_2) - 0}{\sqrt{\frac{\hat{p}_{pooled}(1-\hat{p}_{pooled})}{n_1} + \frac{\hat{p}_{pooled}(1-\hat{p}_{pooled})}{n_2}}}
+$$
+
+**Step 1: State the hypotheses**
+
+\vspace{0.5in}
+
+
+**Step 2: Check the conditions**
+
+\vspace{1.5in}
+
+
+**Step 3: Calculate the evidence**
+
+\vspace{1.5in}
+
+**Step 4: Decide and conclude**
+
+\vspace{1in}
+
+\newpage
+
+
+## Connecting Ideas
+
+### Same framework, new parameter
+
+| Situation | Parameter of interest | Sampling distribution |
+|:------------|:----------|:------------------------------------------|
+| One proportion | $p$ | $\hat{p} \overset{approximately}{\sim} \text{Normal} \left(p, \sqrt{\frac{p(1-p)}{n}}\right)$ |
+| Two proportions | $p_1 - p_2$ | $\hat{p}_1 - \hat{p}_2 \overset{approximately}{\sim} \text{Normal} \left(p_1 - p_2, \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}\right)$ |
+
+Key computational differences:
+
+\vspace{3in}
+
+### Summary of Procedures:
+
+#### Confidence Interval for $p_1 - p_2$
+
+0. Identify parameter: $p_1 - p_2$
+1. Check conditions (both groups)
+2. Compute $\hat{p}_1 - \hat{p}_2$ and SE (use $\hat{p}_1, \hat{p}_2$) to construct CI
+3. Interpret in context  
+
+#### Hypothesis Test for $p_1 - p_2$
+
+0. Identify parameter: $p_1 - p_2$
+1. State hypotheses
+2. Check conditions (use pooled for success-failure)
+3. Calculate evidence: Compute pooled proportion and SE (pooled) to get test statistic (z-score). Use `pnorm()` to find the p-value.
+4. Decide & conclude  
