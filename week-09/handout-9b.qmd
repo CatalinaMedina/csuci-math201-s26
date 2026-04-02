@@ -1,6 +1,6 @@
 ---
-title: "MATH 201: Lecture 8b Handout"
-subtitle: "6.2 Inference for two proportions"
+title: "MATH 201: Lecture 9b Handout"
+subtitle: "7.1 Inference for a mean (Part 1)"
 format: 
   pdf:
     echo: false
