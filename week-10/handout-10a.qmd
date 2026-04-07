@@ -1,0 +1,94 @@
+---
+title: "MATH 201: Lecture 10a Handout"
+subtitle: "7.1 Inference for a mean (Part 2)"
+format: 
+  pdf:
+    echo: false
+    message: false
+    warning: false
+    geometry:
+      - top=0.5in
+      - left=1in
+      - right=1in
+---
+
+```{r}
+library(tidyverse)
+options(scipen = 999)
+```
+
+\newcommand{\blank}{\rule{2.5cm}{0.15mm}}
+
+\vspace*{-2cm}
+
+Name:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_ Date:\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_
+
+## Learning goals for today
+
+By the end of this lecture, you should be able to:
+
+- Conduct a hypothesis test for a population mean using the $t$-distribution
+- Identify and interpret each component of a $t$-test (parameter, hypotheses, test statistic, p-value, conclusion)
+- Explain what the test statistic and p-value represent in context
+- Recognize how inference for means follows the same structure as inference for proportions
+
+
+## Sampling distribution
+
+Just like with proportions, our test statistic for a hypothesis test is:
+
+$$\text{Test statistic} = \frac{\text{Point estimate} - \text{hypothesized value}}{SE}$$
+
+The test statistic for a sample mean (with unknown $\sigma$), is
+
+$$\text{T} = \frac{\bar{x} - \mu_0}{\frac{s}{\sqrt{n}}},$$
+With
+$$t \overset{approx}{\sim} t (df = n - 1)$$
+
+
+<!-- Example[^1]: Pinet et al (2022) studied typing speed for students at a large university.  -->
+
+<!-- ```{r} -->
+<!-- typing <- read_csv( -->
+<!--   here::here("week-10", "Typing.csv"), -->
+<!--   show_col_types = FALSE -->
+<!-- ) -->
+
+<!-- ggplot(typing, aes(x = mTS)) + -->
+<!--   geom_histogram(color = "black", fill = "gray") + -->
+<!--   theme_minimal() + -->
+<!--   labs( -->
+<!--     x = "Mean typing speed (wpm)" -->
+<!--   ) -->
+<!-- ``` -->
+
+
+<!-- [^1]:  Typing data from [Peter K. Dunn, 2024](https://peterkdunn.github.io/SRM-Textbook/SummariseComments.html): [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) -->
+
+Example: New York is known as “the city that never sleeps”. A random sample of 25 New Yorkers were asked how much sleep they get per night. Statistical summaries of these data are shown below. 
+
+| $n$ | $\bar{x}$ | $s$ | $\text{min}$ | $\text{max}$ |
+|:--------|:--------|:--------|:--------|:--------|
+| 25 | 7.73 | 0.77 | 6.17 | 9.78 |
+
+We will use this one sample to conduct hypothesis tests for all three cases.
+
+\newpage
+
+## Case 1: $H_A: \mu < \mu_0$
+
+Conduct a hypothesis test, with a significance level of 0.1, to determine if there is evidence that the average number of hours New Yorkers sleep per night is less than 8.
+
+\newpage
+
+## Case 2: $H_A: \mu > \mu_0$
+
+Conduct a hypothesis test, with a significance level of 0.1, to determine if there is evidence that the average number of hours New Yorkers sleep per night is greater than 8.
+
+\newpage
+
+## Case 3: $H_A: \mu \neq \mu_0$
+
+Conduct a hypothesis test, with a significance level of 0.1, to determine if there is evidence that the average number of hours New Yorkers sleep per night is different from 8.
+
+
