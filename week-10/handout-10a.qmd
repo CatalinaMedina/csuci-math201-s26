@@ -43,7 +43,7 @@ The test statistic for a sample mean (with unknown $\sigma$), is
 
 $$\text{T} = \frac{\bar{x} - \mu_0}{\frac{s}{\sqrt{n}}},$$
 With
-$$t \overset{approx}{\sim} t (df = n - 1)$$
+$$\text{T} \sim t (df = n - 1)$$
 
 
 <!-- Example[^1]: Pinet et al (2022) studied typing speed for students at a large university.  -->
