@@ -39,7 +39,7 @@ Recall inference means to use a sample to infer about a population quantity (cal
 Below are two sampling distributions that we have learned for inference concerning proportions. 
 Today we will learn about inference for a mean.
 
-| Population parameter (unknown) | Sample statistic (point estiamte) | Sampling distribution | Mean | Standard error |
+| Population parameter (unknown) | Sample statistic (point estimate) | Sampling distribution | Mean | Standard error |
 |:--------------------|:--------------------|:-----------------|:------------|:-----------------------------|
 | $p$ | $\hat{p}$ | Normal distribution | $p$ | $\sqrt{\frac{p \times (1 - p)}{n}}$ |
 | $p_1 - p_2$ | $\hat{p}_1 - \hat{p}_2$ | Normal distribution | $p_1 - p_2$ | $\sqrt{\frac{p_1 \times (1 - p_1)}{n_1} + \frac{p_2 \times (1 - p_2)}{n_2}}$
@@ -163,7 +163,7 @@ Confidence interval for a mean follows a similar structure:
 
 $$\text{point estimate} \pm t^* \times SE$$
 
-$$\bar{x} \pm t^*_{df = n-1} \times \sqrt{\frac{s}{n}}$$
+$$\bar{x} \pm t^*_{df = n-1} \times \frac{s}{\sqrt{n}}$$
 
 Example: 
 
